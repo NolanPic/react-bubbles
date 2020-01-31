@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from 'axios';
+import { apiUrl } from '../utils/api';
 
 const Login = () => {
   // make a post request to retrieve a token from the api
@@ -18,6 +20,15 @@ const Login = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
+
+    axios.post(`${apiUrl}/login`, credentials)
+      .then(res => {
+        console.log(res);
+        localStorage.setItem('token', res.data.payload);
+
+        // *!* TODO: Redirect
+      })
+      .catch(err => console.warn(err));
   };
 
   return (
@@ -42,6 +53,7 @@ const Login = () => {
             onChange={handleChange}
           />
         </label>
+        <button type="submit">Login</button>
       </form>
     </>
   );
