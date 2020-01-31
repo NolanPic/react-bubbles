@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import { apiUrl } from '../utils/api';
 
 const Login = () => {
@@ -10,6 +11,8 @@ const Login = () => {
     password: ''
   };
   const [ credentials, setCredentials ] = useState(initialState);
+  const [ error, setError ] = useState('');
+  const history = useHistory();
 
   const handleChange = e => {
     setCredentials({
@@ -25,16 +28,20 @@ const Login = () => {
       .then(res => {
         console.log(res);
         localStorage.setItem('token', res.data.payload);
+        history.push('/bubbles');
 
-        // *!* TODO: Redirect
       })
-      .catch(err => console.warn(err));
+      .catch(err => {
+        console.warn(err);
+        setError('Invalid credentials');
+      });
   };
 
   return (
     <>
       <h1>Welcome to the Bubble App!</h1>
       <form onSubmit={handleSubmit}>
+        {error && <p style={{color: 'red'}}>{error}</p>}
         <label>
           <p>Username:</p>
           <input
